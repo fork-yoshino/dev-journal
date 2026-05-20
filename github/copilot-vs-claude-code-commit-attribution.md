@@ -1,4 +1,4 @@
-# GitHub Copilot / Claude Code のコミット署名設定まとめ
+# GitHub Copilot / Claude Code のコミットAI署名設定
 
 > VS Code 1.118では、VS Code内蔵のGit機能でコミットする場合に、Copilotのチャット上で作成されたコードやエージェントが書いたコードがコミット対象に含まれていれば、コミットメッセージに`Co-authored-by: Copilot <copilot@github.com>`を追加する設定がデフォルトで有効になった。
 

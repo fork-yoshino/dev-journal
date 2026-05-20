@@ -86,10 +86,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 | 観点 | GitHub Copilot (VS Code) | Claude Code |
 | --- | --- | --- |
-| 設定キー | `git.addAICoAuthor` | `attribution`（`includeCoAuthoredBy`非推奨） |
+| 設定キー | `git.addAICoAuthor` | `attribution`（`includeCoAuthoredBy`は非推奨） |
 | 設定ファイル | VS Codeの`settings.json` | `~/.claude/settings.json` |
-| 値の粒度 | 3段階 (`off` / `chatAndAgent` / `all`) | commit / pr 別に任意の文字列（`""`で無効） |
-| 署名の主体 | `Copilot <copilot@github.com>` | `Claude <noreply@anthropic.com>` |
+| 設定値 | 3段階 (`off` / `chatAndAgent` / `all`) | commit / pr 別に任意の文字列（`""`で無効） |
+| 署名の文言 | `Copilot <copilot@github.com>` | `Claude <noreply@anthropic.com>` |
 | 追加文言 | `Co-authored-by`の署名行のみ | `Co-Authored-By`の署名行 + 「Claude Codeで生成」の案内文 |
 
 参考: [Claude Code 設定リファレンス](https://code.claude.com/docs/ja/settings)

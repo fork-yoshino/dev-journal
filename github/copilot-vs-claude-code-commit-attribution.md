@@ -84,7 +84,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## GitHub Copilotとの違い
 
-| 観点 | GitHub Copilot (VS Code) | Claude Code |
+|| GitHub Copilot (VS Code) | Claude Code |
 | --- | --- | --- |
 | 設定キー | `git.addAICoAuthor` | `attribution`（`includeCoAuthoredBy`は非推奨） |
 | 設定ファイル | VS Codeの`settings.json` | `~/.claude/settings.json` |

@@ -1,0 +1,95 @@
+# git checkout の git switch / git restore への置き換え
+
+> Git 2.23（2019年8月リリース）で`git switch`と`git restore`が追加されました。`git checkout`ひとつに集中していた「ブランチの切り替え」と「ファイルの復元」が、役割ごとに別々のコマンドへ整理されています。
+
+参考: [Git 2.23 リリースノート（GitHub Blog）](https://github.blog/2019-08-16-highlights-from-git-2-23/)
+
+## なぜ分けられたのか
+
+`git checkout`は1つのコマンドで、ブランチの切り替えからファイルの復元まで、性質の違う操作をまとめてこなせてしまいます。
+
+```bash
+# ブランチの切り替えやコミットへの移動
+git checkout main          # ブランチを切り替える
+git checkout -b feature    # 新しいブランチを作って切り替える
+git checkout abc123        # 特定のコミットに移動する
+
+# ファイルを元に戻す操作
+git checkout -- file.txt   # file.txt の編集を取り消す
+git checkout main file.txt # file.txt を main の内容に戻す
+```
+
+このように、上の3つの「ブランチの切り替えやコミットへの移動」と、下の2つの「ファイルを元に戻す操作」が同じコマンドに同居しているのが、分かりにくさの原因です。
+
+特に分かりにくいのが、`git checkout`は**後ろにブランチ名を書くか、ファイル名を書くかによって、動作が変わる**点です。ブランチ名なら「切り替え」（無害）ですが、ファイル名を書くと「そのファイルの編集を破棄する」という、元に戻せない操作になります。
+
+```bash
+git checkout main      # ブランチ名 → main ブランチに切り替わる（無害）
+git checkout app.js    # ファイル名 → app.js の編集が破棄される（元に戻せない）
+git checkout .         # → 作業中の編集がすべて破棄される（元に戻せない）
+```
+
+`git checkout`という1つのコマンドが、無害なブランチの切り替えと、編集が消える破壊的な操作の両方が割り当てられています。そのため「checkout で編集が消えてしまうこと」に気づきにくく、思わぬ事故につながりやすいのが難点でした。
+
+そこで、役割ごとにコマンドが分けられました。
+
+- `git switch` … **ブランチの切り替え・作成**
+- `git restore` … **ファイルの復元・変更の取り消し**
+
+コマンド名を見ただけで「今ブランチを触っているのか、ファイルを触っているのか」が分かるので、操作の意図が読み取りやすく、誤操作も減ります。
+
+## git switch — ブランチの切り替え・作成
+
+```bash
+git switch main                       # 既存のブランチに切り替える
+git switch -c feature                 # 新しいブランチを作って切り替える（checkout -b に相当）
+git switch -                          # 直前にいたブランチに戻る（cd - と同じ感覚）
+git switch -c feature origin/feature  # リモートのブランチをもとに作って切り替える
+```
+
+`git switch`が扱うのはブランチの切り替えと作成です。後ろにファイル名を書く使い方が無いので、`git checkout`のようにファイルの編集をうっかり破棄してしまう、という事故は起きません。
+
+## git restore — ファイルの復元・変更の取り消し
+
+`git checkout`が担っていたファイル操作は、`git restore`に置き換わります。
+
+```bash
+git restore file.txt                # 作業中の編集を取り消して元に戻す（checkout -- file.txt に相当）
+git restore --source=main file.txt  # main の時点の内容に戻す（checkout main file.txt に相当。-s main と短縮も可）
+```
+
+> ⚠️ `git restore .`（カレント以下すべて）のように範囲を広げると、コミットしていない編集がまとめてまとめて消えるので注意。
+
+### 補足: git reset によるステージ解除も行える
+
+ここまで`git restore`を`git checkout`の置き換えとして説明してきましたが、`--staged`を付けると、これまで`git reset HEAD <file>`で行っていた**ステージ解除（`git add`の取り消し）**も行えます。
+
+```bash
+git restore --staged file.txt   # git add を取り消す（reset HEAD file.txt に相当）
+```
+
+## 対応表（checkout からの置き換え）
+
+| やりたいこと | 従来の git checkout | 新しいコマンド |
+| --- | --- | --- |
+| ブランチを切り替える | `git checkout main` | `git switch main` |
+| ブランチを作って切り替える | `git checkout -b feature` | `git switch -c feature` |
+| 直前のブランチに戻る | `git checkout -` | `git switch -` |
+| 特定のコミットに移動する | `git checkout abc123` | `git switch -d abc123` |
+| 作業中の編集を取り消す | `git checkout -- file.txt` | `git restore file.txt` |
+| 別ブランチ・コミットの内容に戻す | `git checkout main file.txt` | `git restore --source=main file.txt` |
+
+## 注意点
+
+- `git checkout`は**非推奨ではなく、廃止の予定もありません**。そのため、`switch` / `restore`が増えた今も従来どおり使えます。慣れているなら使い続けて問題ありませんが、新しく覚えるなら役割が明確な`switch` / `restore`がおすすめです。
+- `git switch` / `git restore`は登場時こそドキュメントに「experimental（実験的）」と注記されていましたが、現在その注記は外れ、安定して使えます。
+
+## まとめ
+
+`git checkout`の役割は、ブランチ操作の`git switch`とファイル操作の`git restore`に分かれました。迷ったら **「ブランチを動かす＝`switch`」「ファイルを戻す＝`restore`」** と覚えておけば大丈夫です。
+
+## 参考
+
+- [git-switch 公式ドキュメント](https://git-scm.com/docs/git-switch) / [git-restore 公式ドキュメント](https://git-scm.com/docs/git-restore)
+- [git checkout の代替としてリリースされた git switch と git restore（kakakakakku blog）](https://kakakakakku.hatenablog.com/entry/2020/04/08/151627)
+- [git checkout はもう迷わない。git switch / git restore を実例で理解する（Qiita / softbase）](https://qiita.com/softbase/items/da6e96699f64243765d9)

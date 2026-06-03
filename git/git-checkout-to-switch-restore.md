@@ -1,4 +1,4 @@
-# git checkout の git switch / git restore への置き換え
+# git checkout から git switch / git restore への置き換え
 
 > Git 2.23（2019年8月リリース）で`git switch`と`git restore`が追加されました。`git checkout`ひとつに集中していた「ブランチの切り替え」と「ファイルの復元」が、役割ごとに別々のコマンドへ整理されています。
 

@@ -51,7 +51,7 @@ git switch -c feature origin/feature  # リモートのブランチをもとに�
 
 ## git restore — ファイルの復元・変更の取り消し
 
-`git checkout`が担っていたファイルの復元・変更の取り消しなどは、`git restore`に置き換わります。
+ファイルの復元・変更の取り消しなどは、`git restore`に置き換わります。
 
 ```bash
 git restore file.txt                # 作業中の編集を取り消して元に戻す（checkout -- file.txt に相当）

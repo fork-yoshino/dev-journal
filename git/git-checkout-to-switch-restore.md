@@ -86,7 +86,9 @@ git restore --staged file.txt   # git add を取り消す（reset HEAD file.txt 
 
 ## まとめ
 
-`git checkout`の役割は、ブランチ操作の`git switch`とファイル操作の`git restore`に分かれました。迷ったら **「ブランチを動かす＝`switch`」「ファイルを戻す＝`restore`」** と覚えておけば大丈夫です。
+`git checkout`の役割は、ブランチ操作の`git switch`とファイル操作の`git restore`に分かれました。
+
+役割がコマンド名から分かり、`checkout`のように操作を取り違えてファイルを消す事故も起きにくいため、これから覚えて使うなら、`switch` / `restore`がおすすめです。
 
 ## 参考
 

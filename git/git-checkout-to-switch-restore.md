@@ -19,8 +19,6 @@ git checkout -- file.txt   # file.txt の編集を取り消す
 git checkout main file.txt # file.txt を main の内容に戻す
 ```
 
-このように、「ブランチの切り替えやコミットへの移動」と、「ファイルを元に戻す操作」が同じコマンドに同居してしまっています。
-
 特に危ないのが、`git checkout`は**後ろにブランチ名を書くか、ファイル名を書くかによって、動作が変わる**点です。ブランチ名なら「切り替え」（無害）ですが、ファイル名を書くと「そのファイルの編集を破棄する」という、元に戻せない操作になります。
 
 ```bash
@@ -62,7 +60,7 @@ git restore --source=main file.txt  # main の時点の内容に戻す（checkou
 
 ### 補足: git reset によるステージ解除も行える
 
-`git restore`に`--staged`を付けることで、これまで`git reset HEAD <file>`で行っていた**ステージ解除（`git add`の取り消し）**も行えます。
+`git restore`に`--staged`を付けることで、これまで`git reset HEAD <file>`で行っていたステージング解除（`git add`の取り消し）も行えます。
 
 ```bash
 git restore --staged file.txt   # git add を取り消す（reset HEAD file.txt に相当）
@@ -82,11 +80,11 @@ git restore --staged file.txt   # git add を取り消す（reset HEAD file.txt 
 ## 注意点
 
 - `git checkout`は**非推奨ではなく、廃止の予定もありません**。そのため、`switch` / `restore`が増えた今も従来どおり使えます。
-- `git switch` / `git restore`は登場時こそドキュメントに「experimental（実験的）」と注記されていましたが、現在その注記は外れ、安定して使えます。
+- `git switch` / `git restore`は登場時はドキュメントに「experimental（実験的）」と注記されていましたが、現在その注記は外れ、安定して使えます。
 
 ## まとめ
 
-`git checkout`の役割は、ブランチ操作の`git switch`とファイル操作の`git restore`に分かれました。
+`git checkout`の役割は、ブランチを操作する`git switch`と、ファイルを操作する`git restore`に分かれました。
 
 役割がコマンド名から分かり、`checkout`のように操作を取り違えてファイルを消す事故も起きにくいため、これから覚えて使うなら、`switch` / `restore`がおすすめです。
 

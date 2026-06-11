@@ -177,40 +177,6 @@ document.getElementById('add').addEventListener('click', () => {
 
 ただしこの方法では、同じ処理をボタンの数だけ登録することになり、項目が増えるほどリスナーも1つずつ増えていきます。
 
-## フレームワークでは（React）
-
-これまでのリストの例を React で書くと、次のようになります。各ボタンの `onClick` に処理を書くだけで、リスナーの登録は自分では行いません。
-
-```jsx
-function FruitList() {
-  const [items, setItems] = useState(['りんご', 'ばなな']);
-  const remove = (target) => setItems(items.filter((item) => item !== target));
-  const add = () => setItems([...items, 'みかん']);
-
-  return (
-    <>
-      <ul>
-        {items.map((item) => (
-          <li key={item}>
-            {item}
-            <button onClick={() => remove(item)}>削除</button>
-          </li>
-        ))}
-      </ul>
-      <button onClick={add}>項目を追加</button>
-    </>
-  );
-}
-```
-
-React には、データ（state）が変わるたびに描画をし直す「再レンダリング」という仕組みがあります。
-
-項目を追加すると再レンダリングによって新しいボタンにも `onClick` が自動で付くため、「あとから追加した要素が動かない」問題はそもそも起きず、自分でイベント委譲を書く場面はほとんどありません。
-
-ただし、何もしなくてよいのは **React が内部でイベント委譲を使っている**ためです。各ボタンに個別のリスナーを付けるのではなく、アプリ全体のルート要素に1つだけリスナーを置き、そこから各 `onClick` に振り分けています。つまり `onClick` の裏側で行われているのは、この記事で説明したイベント委譲そのものです。
-
-そのため、バブリングや `event.target`、`stopPropagation()` の理解は、React を使うときにも役立ちます。
-
 ## まとめ
 
 イベント委譲は、バブリング（子で起きたイベントが親へ伝わる性質）を利用して、子要素のイベントを親でまとめて受け取る手法です。
